@@ -2,7 +2,6 @@ input.onGesture(Gesture.ScreenDown, function () {
     if (全局阶段str.compare("工作倒计时") == 0) {
         if (局部阶段num == 0) {
             局部阶段num = 1
-            joystickbit.Vibration_Motor(100)
         }
     }
 })
@@ -154,10 +153,10 @@ function 初始化状态 () {
     // 
     // 所有任务结束
     // 
-    // 注：所有以“倒计时”结尾
+    // 注：所有以“倒计时”结尾的阶段，都会进入倒计时状态
     全局阶段str = "问候语"
     局部阶段num = 0
-    番茄时间长度m = 1
+    番茄时间长度m = 25
     短休息长度m = 3
     长休息长度m = 15
     上次绘制的时间m = -1
@@ -225,14 +224,10 @@ control.inBackground(function () {
                 显示符号时间(长休息长度m, false)
             }
         } else if (全局阶段str.indexOf("倒计时") == 全局阶段str.length - 3) {
-            if (当前倒计时时间ms < 10000) {
-                basic.showNumber(Math.floor(当前倒计时时间ms / 1000))
-            } else {
-                if (局部阶段num == 0) {
-                    显示符号时间(Math.ceil(当前倒计时时间ms / 60000), true)
-                } else if (局部阶段num == 1) {
-                    显示符号时间(Math.ceil(当前倒计时时间ms / 60000), false)
-                }
+            if (局部阶段num == 0) {
+                显示符号时间(Math.ceil(当前倒计时时间ms / 60000), true)
+            } else if (局部阶段num == 1) {
+                显示符号时间(Math.ceil(当前倒计时时间ms / 60000), false)
             }
         }
         basic.pause(50)
