@@ -3,16 +3,16 @@
 // 短休息 3 到 5
 // 
 // 长休息 15 到 30
-function 显示符号时间 (时间: number, 闪烁: boolean) {
-    if (上次绘制的时间m != 时间) {
+function 显示符号时间 (时间m: number, 闪烁b: boolean) {
+    if (上次绘制的时间m != 时间m) {
         basic.clearScreen()
         绘图索引X = 0
-        while (绘图索引X < Math.idiv(时间 - 1, 10)) {
+        while (绘图索引X < Math.idiv(时间m - 1, 10)) {
             led.plot(绘图索引X, 0)
             绘图索引X += 1
         }
         临时值 = 0
-        while (临时值 < 时间 - Math.idiv(时间 - 1, 10) * 10) {
+        while (临时值 < 时间m - Math.idiv(时间m - 1, 10) * 10) {
             if (临时值 < 5) {
                 绘图索引X = 临时值
                 绘图索引Y = 3
@@ -23,7 +23,18 @@ function 显示符号时间 (时间: number, 闪烁: boolean) {
             led.plot(绘图索引X, 绘图索引Y)
             临时值 += 1
         }
-        上次绘制的时间m = 时间
+        上次绘制的时间m = 时间m
+    }
+    if (闪烁b && 时间m > 0) {
+        临时值 = Math.trunc(input.runningTime() / 500) % 2
+        if (当前闪烁状态01 != 临时值) {
+            if (当前闪烁状态01 == 0) {
+                led.unplot(绘图索引X, 绘图索引Y)
+            } else {
+                led.plot(绘图索引X, 绘图索引Y)
+            }
+            当前闪烁状态01 = 临时值
+        }
     }
 }
 input.onButtonPressed(Button.A, function () {
@@ -57,6 +68,7 @@ input.onButtonPressed(Button.B, function () {
         局部阶段num += 1
         if (局部阶段num > 2) {
             全局阶段str = "工作倒计时"
+            局部阶段num = 0
         }
     } else {
     	
@@ -78,12 +90,15 @@ function 初始化状态 () {
     短休息长度m = 3
     长休息长度m = 15
     上次绘制的时间m = -1
+    当前闪烁状态01 = 0
 }
+let 当前倒计时时间ms = 0
 let 当前时段起始时间ms = 0
 let 长休息长度m = 0
 let 短休息长度m = 0
 let 番茄时间长度m = 0
 let 局部阶段num = 0
+let 当前闪烁状态01 = 0
 let 绘图索引Y = 0
 let 临时值 = 0
 let 绘图索引X = 0
@@ -97,8 +112,13 @@ basic.forever(function () {
         basic.pause(100)
     }
     当前时段起始时间ms = input.runningTime()
+    当前倒计时时间ms = 番茄时间长度m * 60000
     while (全局阶段str.compare("工作倒计时") == 0) {
         basic.pause(100)
+        if (局部阶段num == 0) {
+            当前倒计时时间ms = 当前倒计时时间ms - (input.runningTime() - 当前时段起始时间ms)
+            当前时段起始时间ms = input.runningTime()
+        }
     }
     basic.showString("SetTime")
 })
@@ -114,7 +134,7 @@ control.inBackground(function () {
             }
         } else if (全局阶段str.compare("工作倒计时") == 0) {
             if (局部阶段num == 0) {
-                显示符号时间(番茄时间长度m, true)
+                显示符号时间(Math.ceil(当前倒计时时间ms / 60000), true)
             } else if (局部阶段num == 1) {
             	
             }
