@@ -1,5 +1,5 @@
 function 等待阶段结束 (阶段Str: string) {
-    while (阶段Str.compare("设置") == 0) {
+    while (全局阶段str.compare(阶段Str) == 0) {
         basic.pause(100)
     }
 }
@@ -127,12 +127,12 @@ let 长休息长度m = 0
 let 短休息长度m = 0
 let 番茄时间长度m = 0
 let 局部阶段num = 0
-let 全局阶段str = ""
 let 当前闪烁状态01 = 0
 let 绘图索引Y = 0
 let 临时值 = 0
 let 绘图索引X = 0
 let 上次绘制的时间m = 0
+let 全局阶段str = ""
 初始化状态()
 basic.showString("Tomato Clock")
 设置当前阶段("设置")
