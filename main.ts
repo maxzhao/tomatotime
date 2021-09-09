@@ -5,6 +5,10 @@ input.onGesture(Gesture.ScreenDown, function () {
         }
     }
 })
+function 清空时间显示状态 () {
+    上次绘制的时间m = 0
+    当前闪烁状态01 = 0
+}
 function 等待阶段结束 (阶段Str: string) {
     while (全局阶段str.compare(阶段Str) == 0) {
         basic.pause(100)
@@ -71,7 +75,7 @@ input.onButtonPressed(Button.A, function () {
         }
     } else if (全局阶段str.compare("等待响应") == 0) {
         led.stopAnimation()
-        设置当前阶段("放弃番茄钟")
+        设置当前阶段("所有任务结束")
     }
 })
 input.onGesture(Gesture.Shake, function () {
@@ -127,7 +131,7 @@ input.onButtonPressed(Button.B, function () {
         }
     } else if (全局阶段str.compare("等待响应") == 0) {
         led.stopAnimation()
-        设置当前阶段("所有任务结束")
+        设置当前阶段("放弃番茄钟")
     }
 })
 function 初始化状态 () {
@@ -148,6 +152,8 @@ function 初始化状态 () {
     // 放弃番茄钟
     // 
     // 所有任务结束
+    // 
+    // 注：所有以“倒计时”结尾的阶段，都会进入倒计时状态
     全局阶段str = "问候语"
     局部阶段num = 0
     番茄时间长度m = 25
@@ -172,10 +178,10 @@ let 当前倒计时时间ms = 0
 let 长休息长度m = 0
 let 短休息长度m = 0
 let 番茄时间长度m = 0
-let 当前闪烁状态01 = 0
 let 绘图索引Y = 0
 let 临时值 = 0
 let 绘图索引X = 0
+let 当前闪烁状态01 = 0
 let 上次绘制的时间m = 0
 let 局部阶段num = 0
 let 全局阶段str = ""
@@ -185,11 +191,12 @@ basic.showString("Tomato Clock")
 basic.forever(function () {
     等待阶段结束("设置")
     while (全局阶段str.compare("所有任务结束") != 0) {
-        if (全局阶段str.compare("放弃番茄钟") != 0) {
+        if (全局阶段str.compare("放弃番茄钟") == 0) {
+            清空时间显示状态()
             设置当前阶段("工作倒计时")
         }
         进入倒计时("工作倒计时", 番茄时间长度m)
-        if (全局阶段str.compare("倒计时结束") != 0) {
+        if (全局阶段str.compare("倒计时结束") == 0) {
             番茄钟累积num += 1
             if (番茄钟累积num % 4 == 0) {
                 设置当前阶段("长时间倒计时")
@@ -216,14 +223,12 @@ control.inBackground(function () {
             } else if (局部阶段num == 2) {
                 显示符号时间(长休息长度m, false)
             }
-        } else if (全局阶段str.compare("工作倒计时") == 0) {
+        } else if (全局阶段str.indexOf("倒计时") == 全局阶段str.length - 3) {
             if (局部阶段num == 0) {
                 显示符号时间(Math.ceil(当前倒计时时间ms / 60000), true)
             } else if (局部阶段num == 1) {
                 显示符号时间(Math.ceil(当前倒计时时间ms / 60000), false)
             }
-        } else {
-        	
         }
         control.waitMicros(10)
     }
