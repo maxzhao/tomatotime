@@ -230,6 +230,6 @@ control.inBackground(function () {
                 显示符号时间(Math.ceil(当前倒计时时间ms / 60000), false)
             }
         }
-        control.waitMicros(10)
+        basic.pause(50)
     }
 })
