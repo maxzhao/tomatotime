@@ -1,12 +1,16 @@
-/**
- * 番茄时长 25 到 60
- * 
- * 短休息 3 到 5
- * 
- * 长休息 15 到 30
- */
+// 番茄时长 25 到 60
+// 
+// 短休息 3 到 5
+// 
+// 长休息 15 到 30
 function 显示符号时间 (时间: number) {
-    basic.clearScreen()
+    if (上次绘制的时间 != 时间) {
+        basic.clearScreen()
+        for (let index = 0; index <= Math.idiv(时间, 10); index++) {
+            led.plot(index, 0)
+        }
+        上次绘制的时间 = 时间
+    }
 }
 input.onButtonPressed(Button.A, function () {
     if (全局阶段.compare("问候语") == 0) {
@@ -20,7 +24,7 @@ input.onButtonPressed(Button.A, function () {
         } else if (局部阶段 == 1) {
             短休息长度 = 短休息长度 + 1
             if (短休息长度 > 5) {
-                番茄时间长度 = 3
+                短休息长度 = 3
             }
         } else if (局部阶段 == 2) {
             长休息长度 = 长休息长度 + 5
@@ -53,11 +57,13 @@ function 初始化状态 () {
     番茄时间长度 = 25
     短休息长度 = 3
     长休息长度 = 15
+    上次绘制的时间 = -1
 }
 let 长休息长度 = 0
 let 短休息长度 = 0
 let 番茄时间长度 = 0
 let 局部阶段 = 0
+let 上次绘制的时间 = 0
 let 全局阶段 = ""
 初始化状态()
 basic.showString("Tomato Clock")
